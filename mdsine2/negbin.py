@@ -87,7 +87,7 @@ class Data(pl.graph.DataNode):
             d = subject.matrix()['raw']
             self.data.append(d)
             self.read_depths.append(np.sum(d, axis=0))
-            self.qpcr.append(subject.qpcr[0])
+            self.qpcr.append(subject.qpcr[subject.times[0]])
 
         self.n_replicates = len(self.data)
 
@@ -938,8 +938,7 @@ def visualize_learned_negative_binomial_model(mcmc: BaseMCMC, section: str='post
 
         ax.scatter(
             x=x, y=y, alpha=0.5,
-            color=colors[sidx], rasterized=False, 
-            label='Subject {}'.format(subj.name))
+            color=colors[sidx], rasterized=False)
 
     # Still need to get the 2.5th percentile, 97.5th percentile and the median
     summ_m = pl.summary(means)
@@ -956,8 +955,8 @@ def visualize_learned_negative_binomial_model(mcmc: BaseMCMC, section: str='post
     low_v = low_v[idxs]
     high_v = high_v[idxs]
 
-    ax.plot(med_m, med_v, color='black', label='Fitted NegBin Model', rasterized=False)
-    ax.fill_between(x=med_m, y1=low_v, y2=high_v, color='black', alpha=0.3, label='95th percentile')
+    a, = ax.plot(med_m, med_v, color='black', label='Fitted NegBin Model', rasterized=False)
+    b = ax.fill_between(x=med_m, y1=low_v, y2=high_v, color='gray', alpha=0.3, label='95th percentile')
 
     ax.set_yscale('log')
     ax.set_xscale('log')
@@ -966,7 +965,15 @@ def visualize_learned_negative_binomial_model(mcmc: BaseMCMC, section: str='post
     ax.set_title('Empirical mean vs variance of counts')
     ax.set_xlim(left=0.5)
     ax.set_ylim(bottom=0.5)
-    ax.legend()
+
+    # special case plot legend to avoid a broken plot when the # of subjects is high
+    legend_handles = [a,b]
+    legend_labels = ['Fitted NegBin Model', '95th percentile']
+
+    if(len(subjset) <= 5):
+      ax.legend()
+    else:
+      ax.legend(legend_handles, legend_labels)
 
     return fig
 

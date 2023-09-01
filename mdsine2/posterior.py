@@ -3155,6 +3155,7 @@ class SubjectLogTrajectorySetMP(pl.multiprocessing.PersistentWorker):
             self.pert_starts = []
             self.pert_ends = []
             for pidx in range(len(pert_starts)):
+              if subjname in pert_starts[pidx].keys():
                 self.pert_starts.append(pert_starts[pidx][subjname])
                 self.pert_ends.append(pert_ends[pidx][subjname])
 

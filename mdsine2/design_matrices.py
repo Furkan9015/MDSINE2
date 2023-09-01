@@ -176,37 +176,39 @@ class Data(DataNode):
             self.tidxs_in_perturbation = []
             for ridx, subj in enumerate(self.subjects):
                 self.tidxs_in_perturbation.append([])
+                
                 for perturbation in self.subjects.perturbations:
-                    start = perturbation.starts[subj.name]
-                    end = perturbation.ends[subj.name]
+                    if subj.name in perturbation.starts.keys():
+                      start = perturbation.starts[subj.name]
+                      end = perturbation.ends[subj.name]
 
-                    if start in self.timepoint2index[ridx]:
-                        # There is a measurement at the start of the perturbation
-                        start_idx = self.timepoint2index[ridx][start]
-                    else:
-                        # There is no measurement at the start of the perturbation.
-                        # Get the next timepoint
-                        start_idx = np.searchsorted(self.times[ridx], start)
-                    
-                    if end in self.timepoint2index[ridx]:
-                        # There is a measurement at the end of the perturbation
-                        end_idx = self.timepoint2index[ridx][end]
-                    else:
-                        # There is no measurement at the end of the perturbation
-                        # Get the previous timepoint
-                        end_idx = np.searchsorted(self.times[ridx], end) - 1
+                      if start in self.timepoint2index[ridx]:
+                          # There is a measurement at the start of the perturbation
+                          start_idx = self.timepoint2index[ridx][start]
+                      else:
+                          # There is no measurement at the start of the perturbation.
+                          # Get the next timepoint
+                          start_idx = np.searchsorted(self.times[ridx], start)
+                      
+                      if end in self.timepoint2index[ridx]:
+                          # There is a measurement at the end of the perturbation
+                          end_idx = self.timepoint2index[ridx][end]
+                      else:
+                          # There is no measurement at the end of the perturbation
+                          # Get the previous timepoint
+                          end_idx = np.searchsorted(self.times[ridx], end) - 1
 
-                    # Check if anything is weird
-                    start_idx = int(start_idx)
-                    end_idx = int(end_idx)
-                    if start_idx > end_idx:
-                        # raise ValueError('end time index ({}) of a perturbation less' \
-                        #     ' than the start index ({})?'.format(end_idx, start_idx))
-                        self.tidxs_in_perturbation[ridx].append((None, None))
-                    if start_idx == end_idx:
-                        self.tidxs_in_perturbation[ridx].append((start_idx, start_idx+1))
-                    else:
-                        self.tidxs_in_perturbation[ridx].append((start_idx, end_idx))
+                      # Check if anything is weird
+                      start_idx = int(start_idx)
+                      end_idx = int(end_idx)
+                      if start_idx > end_idx:
+                          # raise ValueError('end time index ({}) of a perturbation less' \
+                          #     ' than the start index ({})?'.format(end_idx, start_idx))
+                          self.tidxs_in_perturbation[ridx].append((None, None))
+                      if start_idx == end_idx:
+                          self.tidxs_in_perturbation[ridx].append((start_idx, start_idx+1))
+                      else:
+                          self.tidxs_in_perturbation[ridx].append((start_idx, end_idx))
         
         # Set structural zeros - everything is set to non-structural zero initially
         if self.zero_inflation_transition_policy is not None:
@@ -460,36 +462,37 @@ class Data(DataNode):
             for ridx, subj in enumerate(self.subjects):
                 self.tidxs_in_perturbation.append([])
                 for perturbation in self.subjects.perturbations:
-                    start = perturbation.starts[subj.name]
-                    end = perturbation.ends[subj.name]
+                    if subj.name in perturbation.starts.keys():
+                      start = perturbation.starts[subj.name]
+                      end = perturbation.ends[subj.name]
 
-                    if start in self.timepoint2index[ridx]:
-                        # There is a measurement at the start of the perturbation
-                        start_idx = self.timepoint2index[ridx][start]
-                    else:
-                        # There is no measurement at the start of the perturbation.
-                        # Get the next timepoint
-                        start_idx = np.searchsorted(self.times[ridx], start)
-                    
-                    if end in self.timepoint2index[ridx]:
-                        # There is a measurement at the end of the perturbation
-                        end_idx = self.timepoint2index[ridx][end]
-                    else:
-                        # There is no measurement at the end of the perturbation
-                        # Get the previous timepoint
-                        end_idx = np.searchsorted(self.times[ridx], end) - 1
+                      if start in self.timepoint2index[ridx]:
+                          # There is a measurement at the start of the perturbation
+                          start_idx = self.timepoint2index[ridx][start]
+                      else:
+                          # There is no measurement at the start of the perturbation.
+                          # Get the next timepoint
+                          start_idx = np.searchsorted(self.times[ridx], start)
+                      
+                      if end in self.timepoint2index[ridx]:
+                          # There is a measurement at the end of the perturbation
+                          end_idx = self.timepoint2index[ridx][end]
+                      else:
+                          # There is no measurement at the end of the perturbation
+                          # Get the previous timepoint
+                          end_idx = np.searchsorted(self.times[ridx], end) - 1
 
-                    # Check if anything is weird
-                    start_idx = int(start_idx)
-                    end_idx = int(end_idx)
-                    if start_idx > end_idx:
-                        # raise ValueError('end time index ({}) of a perturbation less' \
-                        #     ' than the start index ({})?'.format(end_idx, start_idx))
-                        self.tidxs_in_perturbation[ridx].append((None, None))
-                    if start_idx == end_idx:
-                        self.tidxs_in_perturbation[ridx].append((start_idx, start_idx + 1))
-                    else:
-                        self.tidxs_in_perturbation[ridx].append((start_idx, end_idx))
+                      # Check if anything is weird
+                      start_idx = int(start_idx)
+                      end_idx = int(end_idx)
+                      if start_idx > end_idx:
+                          # raise ValueError('end time index ({}) of a perturbation less' \
+                          #     ' than the start index ({})?'.format(end_idx, start_idx))
+                          self.tidxs_in_perturbation[ridx].append((None, None))
+                      if start_idx == end_idx:
+                          self.tidxs_in_perturbation[ridx].append((start_idx, start_idx + 1))
+                      else:
+                          self.tidxs_in_perturbation[ridx].append((start_idx, end_idx))
 
     def set_zero_inflation(self, turn_on: Iterator[Tuple[int, int, int]]=None, 
         turn_off: Iterator[Tuple[int, int, int]]=None):
@@ -620,6 +623,11 @@ class Data(DataNode):
             # For each replicate, get the time indices where ther are 
             # perturbations and then index them out
             for pidx in range(len(self.G.perturbations)):
+                # print(self.n_replicates)
+                # print(self.G.data.tidxs_in_perturbation)
+                # print(len(self.G.data.tidxs_in_perturbation))
+                if(len(self.G.data.tidxs_in_perturbation[ridx]) == 0):
+                  continue
                 start_tidx, end_tidx = self.G.data.tidxs_in_perturbation[ridx][pidx]
                 if start_tidx is None:
                     continue
@@ -1075,6 +1083,8 @@ class GrowthDesignMatrix(DesignMatrix):
             oidxs = pert.indicator.item_arg_array()
 
             for ridx in range(self.G.data.n_replicates):
+                if(len(self.G.data.tidxs_in_perturbation[ridx]) == 0):
+                  continue
                 start,end = self.G.data.tidxs_in_perturbation[ridx][pidx]
                 if len(oidxs) > 0:
                     d[ridx][oidxs, start:end] *= val
@@ -1179,6 +1189,8 @@ class PerturbationBaseDesignMatrix(DesignMatrix):
             self.ends.append([]) # indices where the perturbation ends
             i = 0
             for pidx in range(self.n_perturbations):
+                if len(self.G.data.tidxs_in_perturbation[ridx]) == 0:
+                  continue
                 start, end = self.G.data.tidxs_in_perturbation[ridx][pidx]
                 if start is None:
                     continue
